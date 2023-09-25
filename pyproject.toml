@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "sechat-bridge"
+version = "0.1.0"
+description = ""
+authors = ["Riley Baker <bbrk24@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+discord-py = "^2.3.2"
+sechat = {git = "git@github.com:GingerIndustries/sechat.git", rev = "v2"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
