@@ -31,6 +31,9 @@ class DiscordClient(discord.Client):
     async def on_message(self, message: discord.Message):
         if message.author.id != self.user.id and message.channel.id == self.CHANNEL_ID and room is not None:
             await room.send(f'{message.author.display_name}: {message.content}')
+            for attachment in message.attachments:
+                # How to get ratelimited 101
+                await room.send(attachment.url.split('?')[0])
 
 HTML_REGEX = re.compile(r"<(\w+).*>.*</\1>", re.RegexFlag.DOTALL)
 async def se_content_to_str(content: str, session: aiohttp.ClientSession) -> Tuple[str, Union[discord.Embed, discord.File, None]]:
