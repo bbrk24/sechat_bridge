@@ -10,6 +10,8 @@ python = "^3.10"
 discord-py = "^2.3.2"
 sechat = {git = "git@github.com:GingerIndustries/sechat.git", rev = "v2"}
 beautifulsoup4 = "^4.12.2"
+aiohttp = "^3.8.5"
+aiodns = "^3.0.0"
 
 [build-system]
 requires = ["poetry-core"]
