@@ -2,13 +2,11 @@ from asyncio import gather
 from typing import Optional
 
 import discord
-from sechat import Room
 
 class DiscordClient(discord.Client):
-    def __init__(self, room: Optional[Room], channel_id: int, intents: discord.Intents):
+    def __init__(self, channel_id: int, intents: discord.Intents):
         self.CHANNEL_ID = channel_id
         self.channel: Optional[discord.abc.GuildChannel | discord.Thread] = None
-        self.room = room
         super().__init__(intents=intents)
     
     async def on_ready(self):

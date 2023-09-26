@@ -1,3 +1,4 @@
+from io import BytesIO
 from itertools import chain
 from typing import Any, Generator, List, Tuple, Union
 
@@ -21,7 +22,7 @@ async def se_content_to_str(content: str, session: ClientSession) -> Tuple[str, 
             return content, None
     else:
         return content, None
-    
+
     onebox = soup.find(lambda el: el.has_attr('class') and 'onebox' in el['class'])
     if onebox is not None:
         ob_type = list(filter(lambda c: c.startswith('ob-'), onebox['class']))[0]
@@ -31,14 +32,14 @@ async def se_content_to_str(content: str, session: ClientSession) -> Tuple[str, 
                 url = img.attrs['src']
                 if url.startswith('//'):
                     url = 'https:' + url
-                
-                return url, None # FIXME: The below crashes with a null byte?
+
                 alt = img.attrs['alt'] if img.has_attr('alt') else None
-                
+
                 async with session.get(url) as response:
                     data = await response.content.read()
                     return '', discord.File(
-                        data,
+                        BytesIO(data),
+                        url.split('/')[-1],
                         description=alt
                     )
             case 'ob-youtube' | 'ob-wikipedia' | 'ob-xkcd':
@@ -60,14 +61,14 @@ async def se_content_to_str(content: str, session: ClientSession) -> Tuple[str, 
                     embed.description = f'[User on {site_icon["title"]} Stack Exchange]({user_url})'
                 else:
                     embed.description = f'Stack Exchange User: <{user_url}>'
-                
+
                 reputation = soup.find(class_='reputation-score')
                 if reputation is not None:
                     embed.add_field(
                         name='Reputation',
                         value=reputation.text
                     )
-                
+
                 badges: List[str] = []
                 for class_name, icon in BADGE_INFOS:
                     badge_icon_tag = soup.find(class_=class_name)
@@ -93,7 +94,7 @@ async def se_content_to_str(content: str, session: ClientSession) -> Tuple[str, 
                         ),
                         inline=False
                     )
-                
+
                 return ' ', embed
             case _:
                 print('Unknown onebox type', ob_type)
